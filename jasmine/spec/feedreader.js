@@ -62,7 +62,9 @@ $(function() {
         const body = $('body');
 
         it('menu default hidden', function() {
-
+            /* check if body element has class of 'munu-hidden',
+             * if it does, menu element will be hidden.
+             */
             expect(body.hasClass('menu-hidden')).toBe(true);
          });
          /* TODO: Write a test that ensures the menu changes
@@ -72,7 +74,9 @@ $(function() {
           */
           it('menun icon can toggle', function() {
             const menuIcon = $('.menu-icon-link');
-
+            /* check if 'menu-hidden' class is added to or removed
+             * from body element after menu icon is clicked.
+             */
             menuIcon.trigger('click');
             expect(body.hasClass('menu-hidden')).toBe(false); 
 
@@ -91,24 +95,51 @@ $(function() {
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
          
+         /* use beforeEach and done() to make sure loadFeed() is called
+          * and completes its work before expecting .feed's content
+          */
          beforeEach(function(done) {
             loadFeed(0, function() {
                 done();
             });
-         })
+         });
 
-         it('loadFeed() successful loading data', function(done) {
+         it('loadFeed() successful with initial entries', function(done) {
             const feedContainer = $('.feed');
-
+            /* check if .feed has at least one entry by counting its children elements.
+             */
             expect(feedContainer.children().length).not.toBeLessThan(0);
             done();
          });
     });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
+    describe('New Feed Selection', function() {
+        const feed = $('.feed');
+        let oldContent = '';
+        let newContent = '';
 
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+
+         /* use loadFeed() twice to load data from different selections.
+          * and then compare two sets of loaded data to make sure they are not the same.
+          */
+        beforeEach(function(done) {
+            loadFeed(0, function() {
+                oldContent = feed.text();
+            });
+            loadFeed(1, function() {
+                done();
+            });
+        });
+
+        it('New feed select successful changeing content', function(done) {
+            newContent = feed.text();
+            expect(newContent).not.toBe(oldContent);
+            done();
+        });
+    });
 }());
